@@ -1,0 +1,6419 @@
+{
+  "id": "ba075038-6c6b-490a-befd-4e26e4ea792f",
+  "revision": 0,
+  "last_node_id": 157,
+  "last_link_id": 140,
+  "nodes": [
+    {
+      "id": 150,
+      "type": "Note",
+      "pos": [
+        -1200,
+        -420
+      ],
+      "size": [
+        720,
+        440
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "使い方｜毎回変更するのは2か所だけ。①左の三面図を1枚選ぶ。②「02」の大きなテキスト欄へAIが返したJSON全文を貼る。JSON作成にはprompt_guide_ja.md / prompt_guide_en.md / prompt_guide_zh-CN.mdをAIチャットに添付し、同じ三面図と作りたい動画を送る。\nJSONには k0_prompt / k1_end / scene1_h3 / k2_end / scene2_h3 / k3_end / scene3_h3 の7項目が必要。現在の入力例は汎用の温室と紙飛行機。自分の三面図と作りたい動画に合うJSONへ替える。\n「固定・変更不要」の折りたたみノードにある三面図の説明、K0維持の指示、FL2VAの時刻指定は通常触らない。K1〜K3は各々K0と三面図を参照する。H3はK0→K1、K1→K2、K2→K3を各約3秒で生成・結合する。\nJSONを壊すと抽出結果が空になるため、AIのJSONを最初の{から最後の}まで丸ごと貼る。完成動画はComfyUIのoutput/qwen_h3_3scene/final_*.mp4。"
+      ],
+      "color": "#443",
+      "bgcolor": "#665"
+    },
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [
+        -1200,
+        0
+      ],
+      "size": [
+        390,
+        300
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "image"
+          }
+        },
+        {
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            5,
+            19,
+            33,
+            47
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "SELECT_YOUR_THREE_VIEW.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "SELECT_YOUR_THREE_VIEW.png"
+      },
+      "title": "01 毎回選択｜アニメまたは実写の三面図1枚"
+    },
+    {
+      "id": 2,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -1200,
+        360
+      ],
+      "size": [
+        650,
+        900
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "value",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "value"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            134,
+            135,
+            136,
+            137,
+            138,
+            139,
+            140
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": [
+        "{\n  \"k0_prompt\": \"Use the supplied single three-view character sheet (front, side and back) only as identity reference for ONE adult character. Do not draw a turnaround sheet, panels, labels, or multiple people. Make one finished image in the visual style of the reference sheet. The character stands in a sunlit greenhouse wearing a plain blue jacket, white shirt, charcoal trousers, and brown shoes, holding one white paper airplane at waist height. Eye-level fixed camera, full-body portrait. A small wooden table stands to the right, with potted plants and window frames behind. Soft daylight. Keep the window and table layout stable. No extra airplane, person, text, or invented accessories. K0 is the master for clothing, fixed background layout, lighting, framing, and character scale.\",\n  \"k1_end\": \"In the same greenhouse, clothing, daylight, camera view, and scale, the character raises the single white paper airplane in the right hand to shoulder height, ready to throw it toward the table on the right. The left arm is relaxed; the gaze follows the intended flight path. Keep the existing table, plants, and windows. No duplicate objects or people.\",\n  \"scene1_h3\": \"[Shot 1] In one continuous fixed-camera shot, the character lifts the single white paper airplane from waist height to shoulder height and looks toward the table on the right. Leaves on the potted plants sway gently throughout the full three seconds. Window frames, table, outfit, lighting, and camera position stay stable. End with the airplane held at shoulder height as in Picture 2.\\noverall_soundscape: Soft greenhouse ambience, leaves rustling, and light paper movement.\\nnon_diegetic_music: N/A\",\n  \"k2_end\": \"In the same greenhouse, clothing, daylight, camera view, and scale, the character has just thrown the single white paper airplane. The right arm extends toward the table on the right; the airplane is visibly in midair between the character and the table. The eyes follow it. Keep the existing table, plants, and windows. No duplicate objects or people.\",\n  \"scene2_h3\": \"[Shot 1] Starting with the airplane raised, the character extends the right arm and releases the single white paper airplane toward the table on the right. The airplane glides visibly through the air and the eyes track it. Leaves on the potted plants continue swaying gently throughout the full three seconds. Window frames, table, outfit, lighting, framing, and camera position stay stable. End with the airplane in midair and the arm extended as in Picture 2.\\noverall_soundscape: Soft leaves rustling and a light swish of paper.\\nnon_diegetic_music: N/A\",\n  \"k3_end\": \"In the same greenhouse, clothing, daylight, camera view, and scale, the single white paper airplane rests on the existing wooden table to the right. The character lowers the right arm, looks at the airplane, and smiles. Keep the plants and windows in their original positions. No duplicate objects or people.\",\n  \"scene3_h3\": \"[Shot 1] The single white paper airplane glides from its midair position, descends, and comes to rest on the existing wooden table to the right. The character follows it with the eyes, lowers the right arm, and smiles. Leaves on the potted plants continue swaying gently throughout the full three seconds. Window frames, table, outfit, lighting, framing, and camera position stay stable. End with the airplane on the table as in Picture 2.\\noverall_soundscape: Soft leaves rustling, faint paper glide, and a gentle tap on the table.\\nnon_diegetic_music: N/A\"\n}"
+      ],
+      "widgets_values_named": {
+        "value": "{\n  \"k0_prompt\": \"Use the supplied single three-view character sheet (front, side and back) only as identity reference for ONE adult character. Do not draw a turnaround sheet, panels, labels, or multiple people. Make one finished image in the visual style of the reference sheet. The character stands in a sunlit greenhouse wearing a plain blue jacket, white shirt, charcoal trousers, and brown shoes, holding one white paper airplane at waist height. Eye-level fixed camera, full-body portrait. A small wooden table stands to the right, with potted plants and window frames behind. Soft daylight. Keep the window and table layout stable. No extra airplane, person, text, or invented accessories. K0 is the master for clothing, fixed background layout, lighting, framing, and character scale.\",\n  \"k1_end\": \"In the same greenhouse, clothing, daylight, camera view, and scale, the character raises the single white paper airplane in the right hand to shoulder height, ready to throw it toward the table on the right. The left arm is relaxed; the gaze follows the intended flight path. Keep the existing table, plants, and windows. No duplicate objects or people.\",\n  \"scene1_h3\": \"[Shot 1] In one continuous fixed-camera shot, the character lifts the single white paper airplane from waist height to shoulder height and looks toward the table on the right. Leaves on the potted plants sway gently throughout the full three seconds. Window frames, table, outfit, lighting, and camera position stay stable. End with the airplane held at shoulder height as in Picture 2.\\noverall_soundscape: Soft greenhouse ambience, leaves rustling, and light paper movement.\\nnon_diegetic_music: N/A\",\n  \"k2_end\": \"In the same greenhouse, clothing, daylight, camera view, and scale, the character has just thrown the single white paper airplane. The right arm extends toward the table on the right; the airplane is visibly in midair between the character and the table. The eyes follow it. Keep the existing table, plants, and windows. No duplicate objects or people.\",\n  \"scene2_h3\": \"[Shot 1] Starting with the airplane raised, the character extends the right arm and releases the single white paper airplane toward the table on the right. The airplane glides visibly through the air and the eyes track it. Leaves on the potted plants continue swaying gently throughout the full three seconds. Window frames, table, outfit, lighting, framing, and camera position stay stable. End with the airplane in midair and the arm extended as in Picture 2.\\noverall_soundscape: Soft leaves rustling and a light swish of paper.\\nnon_diegetic_music: N/A\",\n  \"k3_end\": \"In the same greenhouse, clothing, daylight, camera view, and scale, the single white paper airplane rests on the existing wooden table to the right. The character lowers the right arm, looks at the airplane, and smiles. Keep the plants and windows in their original positions. No duplicate objects or people.\",\n  \"scene3_h3\": \"[Shot 1] The single white paper airplane glides from its midair position, descends, and comes to rest on the existing wooden table to the right. The character follows it with the eyes, lowers the right arm, and smiles. Leaves on the potted plants continue swaying gently throughout the full three seconds. Window frames, table, outfit, lighting, framing, and camera position stay stable. End with the airplane on the table as in Picture 2.\\noverall_soundscape: Soft leaves rustling, faint paper glide, and a gentle tap on the table.\\nnon_diegetic_music: N/A\"\n}"
+      },
+      "title": "02 毎回ここだけ編集｜AI出力JSONを貼る"
+    },
+    {
+      "id": 10,
+      "type": "UNETLoader",
+      "pos": [
+        -430,
+        0
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "unet_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "unet_name"
+          }
+        },
+        {
+          "name": "weight_dtype",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "weight_dtype"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "qwen_image_2.1_int8_convrot.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      },
+      "title": "Qwen Image 2.1 UNET"
+    },
+    {
+      "id": 11,
+      "type": "CLIPLoader",
+      "pos": [
+        -430,
+        130
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "clip_name"
+          }
+        },
+        {
+          "name": "type",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "type"
+          }
+        },
+        {
+          "name": "device",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "device"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            2,
+            15,
+            29,
+            43
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen3vl_8b_fp8_scaled.safetensors",
+        "qwen_image",
+        "default"
+      ],
+      "widgets_values_named": {
+        "clip_name": "qwen3vl_8b_fp8_scaled.safetensors",
+        "type": "qwen_image",
+        "device": "default"
+      },
+      "title": "Qwen text encoder"
+    },
+    {
+      "id": 12,
+      "type": "VAELoader",
+      "pos": [
+        -430,
+        260
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vae_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "vae_name"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            4,
+            12,
+            17,
+            26,
+            31,
+            40,
+            45,
+            54
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "qwen_image_2.1_vae_bf16.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+      },
+      "title": "Qwen VAE"
+    },
+    {
+      "id": 13,
+      "type": "SpectrumQwenImage21",
+      "pos": [
+        -430,
+        430
+      ],
+      "size": [
+        320,
+        360
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "name": "warmup_steps",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "warmup_steps"
+          }
+        },
+        {
+          "name": "tail_actual_steps",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "tail_actual_steps"
+          }
+        },
+        {
+          "name": "window_size",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "window_size"
+          }
+        },
+        {
+          "name": "flex_window",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "flex_window"
+          }
+        },
+        {
+          "name": "max_consecutive_forecasts",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "max_consecutive_forecasts"
+          }
+        },
+        {
+          "name": "history_points",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "history_points"
+          }
+        },
+        {
+          "name": "chebyshev_degree",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "chebyshev_degree"
+          }
+        },
+        {
+          "name": "ridge_lambda",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "ridge_lambda"
+          }
+        },
+        {
+          "name": "blend_weight",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "blend_weight"
+          }
+        },
+        {
+          "name": "cache_device",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "cache_device"
+          }
+        },
+        {
+          "name": "force_actual_on_control",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "force_actual_on_control"
+          }
+        },
+        {
+          "name": "debug",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "debug"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            7,
+            21,
+            35,
+            49
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SpectrumQwenImage21"
+      },
+      "widgets_values": [
+        5,
+        2,
+        2.0,
+        0.75,
+        8,
+        8,
+        4,
+        0.1,
+        0.5,
+        "main_device",
+        true,
+        true
+      ],
+      "widgets_values_named": {
+        "warmup_steps": 5,
+        "tail_actual_steps": 2,
+        "window_size": 2.0,
+        "flex_window": 0.75,
+        "max_consecutive_forecasts": 8,
+        "history_points": 8,
+        "chebyshev_degree": 4,
+        "ridge_lambda": 0.1,
+        "blend_weight": 0.5,
+        "cache_device": "main_device",
+        "force_actual_on_control": true,
+        "debug": true
+      },
+      "title": "Spectrum Qwen 2.1｜全4枚で共用"
+    },
+    {
+      "id": 20,
+      "type": "TextEncodeQwenImage21",
+      "pos": [
+        210,
+        0
+      ],
+      "size": [
+        440,
+        215
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 3,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "negative_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "negative_prompt"
+          }
+        },
+        {
+          "name": "resolution",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "resolution"
+          }
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 4
+        },
+        {
+          "name": "images.image_1",
+          "type": "IMAGE",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            8
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            9
+          ]
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeQwenImage21"
+      },
+      "widgets_values": [
+        "",
+        "triptych, character sheet, multiple panels, duplicate person, three faces, labels, text, watermark, distorted hands",
+        1024
+      ],
+      "widgets_values_named": {
+        "prompt": "",
+        "negative_prompt": "triptych, character sheet, multiple panels, duplicate person, three faces, labels, text, watermark, distorted hands",
+        "resolution": 1024
+      },
+      "title": "固定・変更不要｜Qwen K0 テキスト符号化"
+    },
+    {
+      "id": 21,
+      "type": "LatentUpscale",
+      "pos": [
+        710,
+        0
+      ],
+      "size": [
+        280,
+        150
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 6
+        },
+        {
+          "name": "upscale_method",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "upscale_method"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "crop",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "crop"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LatentUpscale"
+      },
+      "widgets_values": [
+        "nearest-exact",
+        512,
+        896,
+        "disabled"
+      ],
+      "widgets_values_named": {
+        "upscale_method": "nearest-exact",
+        "width": 512,
+        "height": 896,
+        "crop": "disabled"
+      },
+      "title": "K0 latent｜1024×1792出力"
+    },
+    {
+      "id": 22,
+      "type": "KSampler",
+      "pos": [
+        1070,
+        0
+      ],
+      "size": [
+        300,
+        290
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 7
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "seed"
+          }
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "steps"
+          }
+        },
+        {
+          "name": "cfg",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cfg"
+          }
+        },
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "sampler_name"
+          }
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "scheduler"
+          }
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 8
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 9
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 10
+        },
+        {
+          "name": "denoise",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "denoise"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        26092621,
+        "fixed",
+        25,
+        1.0,
+        "euler",
+        "simple",
+        1.0
+      ],
+      "widgets_values_named": {
+        "seed": 26092621,
+        "steps": 25,
+        "cfg": 1.0,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 1.0
+      },
+      "title": "Qwen K0｜25 steps"
+    },
+    {
+      "id": 23,
+      "type": "VAEDecode",
+      "pos": [
+        1440,
+        0
+      ],
+      "size": [
+        250,
+        90
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 11
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 12
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            13,
+            18,
+            32,
+            46,
+            56
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "K0 image"
+    },
+    {
+      "id": 24,
+      "type": "SaveImage",
+      "pos": [
+        1770,
+        0
+      ],
+      "size": [
+        270,
+        110
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 13
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "qwen_h3_3scene/keyframe_K0"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "qwen_h3_3scene/keyframe_K0"
+      },
+      "title": "保存 K0"
+    },
+    {
+      "id": 30,
+      "type": "StringFormat",
+      "pos": [
+        -430,
+        640
+      ],
+      "size": [
+        550,
+        400
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "*",
+          "link": 14
+        },
+        {
+          "name": "f_string",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "f_string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            16
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringFormat"
+      },
+      "widgets_values": [
+        "<image1> is the K0 scene master and edit canvas. Keep its one person, facial appearance, clothes and their details, hair, exact background and object placement, lighting, colors, camera angle, framing, person size and overall visual style. <image2> is the original three-view identity sheet of the SAME character (front, side and back); use it only to keep the face and hairstyle accurate. Edit <image1> into this exact END FRAME state: {a} Change only the pose, gaze, hands and moving props required by that end state. Preserve every other detail of <image1> as closely as possible. Show one continuous image with no three-view panels, duplicate people or duplicate props."
+      ],
+      "widgets_values_named": {
+        "f_string": "<image1> is the K0 scene master and edit canvas. Keep its one person, facial appearance, clothes and their details, hair, exact background and object placement, lighting, colors, camera angle, framing, person size and overall visual style. <image2> is the original three-view identity sheet of the SAME character (front, side and back); use it only to keep the face and hairstyle accurate. Edit <image1> into this exact END FRAME state: {a} Change only the pose, gaze, hands and moving props required by that end state. Preserve every other detail of <image1> as closely as possible. Show one continuous image with no three-view panels, duplicate people or duplicate props."
+      },
+      "title": "固定・変更不要｜K1のK0維持・三面図参照文"
+    },
+    {
+      "id": 31,
+      "type": "TextEncodeQwenImage21",
+      "pos": [
+        210,
+        570
+      ],
+      "size": [
+        440,
+        215
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 15
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 16,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "negative_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "negative_prompt"
+          }
+        },
+        {
+          "name": "resolution",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "resolution"
+          }
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 17
+        },
+        {
+          "name": "images.image_1",
+          "type": "IMAGE",
+          "link": 18
+        },
+        {
+          "name": "images.image_2",
+          "type": "IMAGE",
+          "link": 19
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            22
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            23
+          ]
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            20
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeQwenImage21"
+      },
+      "widgets_values": [
+        "",
+        "triptych, character sheet, multiple panels, duplicate person, three faces, labels, text, watermark, distorted hands",
+        1024
+      ],
+      "widgets_values_named": {
+        "prompt": "",
+        "negative_prompt": "triptych, character sheet, multiple panels, duplicate person, three faces, labels, text, watermark, distorted hands",
+        "resolution": 1024
+      },
+      "title": "固定・変更不要｜Qwen K1 テキスト符号化"
+    },
+    {
+      "id": 32,
+      "type": "LatentUpscale",
+      "pos": [
+        710,
+        570
+      ],
+      "size": [
+        280,
+        150
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 20
+        },
+        {
+          "name": "upscale_method",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "upscale_method"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "crop",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "crop"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            24
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LatentUpscale"
+      },
+      "widgets_values": [
+        "nearest-exact",
+        512,
+        896,
+        "disabled"
+      ],
+      "widgets_values_named": {
+        "upscale_method": "nearest-exact",
+        "width": 512,
+        "height": 896,
+        "crop": "disabled"
+      },
+      "title": "K1 latent｜1024×1792出力"
+    },
+    {
+      "id": 33,
+      "type": "KSampler",
+      "pos": [
+        1070,
+        570
+      ],
+      "size": [
+        300,
+        290
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 21
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "seed"
+          }
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "steps"
+          }
+        },
+        {
+          "name": "cfg",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cfg"
+          }
+        },
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "sampler_name"
+          }
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "scheduler"
+          }
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 22
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 23
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 24
+        },
+        {
+          "name": "denoise",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "denoise"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            25
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        26092631,
+        "fixed",
+        25,
+        1.0,
+        "euler",
+        "simple",
+        1.0
+      ],
+      "widgets_values_named": {
+        "seed": 26092631,
+        "steps": 25,
+        "cfg": 1.0,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 1.0
+      },
+      "title": "Qwen K1｜25 steps"
+    },
+    {
+      "id": 34,
+      "type": "VAEDecode",
+      "pos": [
+        1440,
+        570
+      ],
+      "size": [
+        250,
+        90
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 25
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 26
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            27,
+            57
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "K1 image"
+    },
+    {
+      "id": 35,
+      "type": "SaveImage",
+      "pos": [
+        1770,
+        570
+      ],
+      "size": [
+        270,
+        110
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 27
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "qwen_h3_3scene/keyframe_K1"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "qwen_h3_3scene/keyframe_K1"
+      },
+      "title": "保存 K1"
+    },
+    {
+      "id": 40,
+      "type": "StringFormat",
+      "pos": [
+        -430,
+        1210
+      ],
+      "size": [
+        550,
+        400
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "*",
+          "link": 28
+        },
+        {
+          "name": "f_string",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "f_string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            30
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringFormat"
+      },
+      "widgets_values": [
+        "<image1> is the K0 scene master and edit canvas. Keep its one person, facial appearance, clothes and their details, hair, exact background and object placement, lighting, colors, camera angle, framing, person size and overall visual style. <image2> is the original three-view identity sheet of the SAME character (front, side and back); use it only to keep the face and hairstyle accurate. Edit <image1> into this exact END FRAME state: {a} Change only the pose, gaze, hands and moving props required by that end state. Preserve every other detail of <image1> as closely as possible. Show one continuous image with no three-view panels, duplicate people or duplicate props."
+      ],
+      "widgets_values_named": {
+        "f_string": "<image1> is the K0 scene master and edit canvas. Keep its one person, facial appearance, clothes and their details, hair, exact background and object placement, lighting, colors, camera angle, framing, person size and overall visual style. <image2> is the original three-view identity sheet of the SAME character (front, side and back); use it only to keep the face and hairstyle accurate. Edit <image1> into this exact END FRAME state: {a} Change only the pose, gaze, hands and moving props required by that end state. Preserve every other detail of <image1> as closely as possible. Show one continuous image with no three-view panels, duplicate people or duplicate props."
+      },
+      "title": "固定・変更不要｜K2のK0維持・三面図参照文"
+    },
+    {
+      "id": 41,
+      "type": "TextEncodeQwenImage21",
+      "pos": [
+        210,
+        1140
+      ],
+      "size": [
+        440,
+        215
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 29
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 30,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "negative_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "negative_prompt"
+          }
+        },
+        {
+          "name": "resolution",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "resolution"
+          }
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 31
+        },
+        {
+          "name": "images.image_1",
+          "type": "IMAGE",
+          "link": 32
+        },
+        {
+          "name": "images.image_2",
+          "type": "IMAGE",
+          "link": 33
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            36
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            37
+          ]
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            34
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeQwenImage21"
+      },
+      "widgets_values": [
+        "",
+        "triptych, character sheet, multiple panels, duplicate person, three faces, labels, text, watermark, distorted hands",
+        1024
+      ],
+      "widgets_values_named": {
+        "prompt": "",
+        "negative_prompt": "triptych, character sheet, multiple panels, duplicate person, three faces, labels, text, watermark, distorted hands",
+        "resolution": 1024
+      },
+      "title": "固定・変更不要｜Qwen K2 テキスト符号化"
+    },
+    {
+      "id": 42,
+      "type": "LatentUpscale",
+      "pos": [
+        710,
+        1140
+      ],
+      "size": [
+        280,
+        150
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 34
+        },
+        {
+          "name": "upscale_method",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "upscale_method"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "crop",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "crop"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            38
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LatentUpscale"
+      },
+      "widgets_values": [
+        "nearest-exact",
+        512,
+        896,
+        "disabled"
+      ],
+      "widgets_values_named": {
+        "upscale_method": "nearest-exact",
+        "width": 512,
+        "height": 896,
+        "crop": "disabled"
+      },
+      "title": "K2 latent｜1024×1792出力"
+    },
+    {
+      "id": 43,
+      "type": "KSampler",
+      "pos": [
+        1070,
+        1140
+      ],
+      "size": [
+        300,
+        290
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 35
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "seed"
+          }
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "steps"
+          }
+        },
+        {
+          "name": "cfg",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cfg"
+          }
+        },
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "sampler_name"
+          }
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "scheduler"
+          }
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 36
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 37
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 38
+        },
+        {
+          "name": "denoise",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "denoise"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            39
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        26092631,
+        "fixed",
+        25,
+        1.0,
+        "euler",
+        "simple",
+        1.0
+      ],
+      "widgets_values_named": {
+        "seed": 26092631,
+        "steps": 25,
+        "cfg": 1.0,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 1.0
+      },
+      "title": "Qwen K2｜25 steps"
+    },
+    {
+      "id": 44,
+      "type": "VAEDecode",
+      "pos": [
+        1440,
+        1140
+      ],
+      "size": [
+        250,
+        90
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 39
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 40
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            41,
+            59
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "K2 image"
+    },
+    {
+      "id": 45,
+      "type": "SaveImage",
+      "pos": [
+        1770,
+        1140
+      ],
+      "size": [
+        270,
+        110
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 41
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "qwen_h3_3scene/keyframe_K2"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "qwen_h3_3scene/keyframe_K2"
+      },
+      "title": "保存 K2"
+    },
+    {
+      "id": 50,
+      "type": "StringFormat",
+      "pos": [
+        -430,
+        1780
+      ],
+      "size": [
+        550,
+        400
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 29,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "*",
+          "link": 42
+        },
+        {
+          "name": "f_string",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "f_string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            44
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringFormat"
+      },
+      "widgets_values": [
+        "<image1> is the K0 scene master and edit canvas. Keep its one person, facial appearance, clothes and their details, hair, exact background and object placement, lighting, colors, camera angle, framing, person size and overall visual style. <image2> is the original three-view identity sheet of the SAME character (front, side and back); use it only to keep the face and hairstyle accurate. Edit <image1> into this exact END FRAME state: {a} Change only the pose, gaze, hands and moving props required by that end state. Preserve every other detail of <image1> as closely as possible. Show one continuous image with no three-view panels, duplicate people or duplicate props."
+      ],
+      "widgets_values_named": {
+        "f_string": "<image1> is the K0 scene master and edit canvas. Keep its one person, facial appearance, clothes and their details, hair, exact background and object placement, lighting, colors, camera angle, framing, person size and overall visual style. <image2> is the original three-view identity sheet of the SAME character (front, side and back); use it only to keep the face and hairstyle accurate. Edit <image1> into this exact END FRAME state: {a} Change only the pose, gaze, hands and moving props required by that end state. Preserve every other detail of <image1> as closely as possible. Show one continuous image with no three-view panels, duplicate people or duplicate props."
+      },
+      "title": "固定・変更不要｜K3のK0維持・三面図参照文"
+    },
+    {
+      "id": 51,
+      "type": "TextEncodeQwenImage21",
+      "pos": [
+        210,
+        1710
+      ],
+      "size": [
+        440,
+        215
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 43
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 44,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "negative_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "negative_prompt"
+          }
+        },
+        {
+          "name": "resolution",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "resolution"
+          }
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 45
+        },
+        {
+          "name": "images.image_1",
+          "type": "IMAGE",
+          "link": 46
+        },
+        {
+          "name": "images.image_2",
+          "type": "IMAGE",
+          "link": 47
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            50
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            51
+          ]
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            48
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeQwenImage21"
+      },
+      "widgets_values": [
+        "",
+        "triptych, character sheet, multiple panels, duplicate person, three faces, labels, text, watermark, distorted hands",
+        1024
+      ],
+      "widgets_values_named": {
+        "prompt": "",
+        "negative_prompt": "triptych, character sheet, multiple panels, duplicate person, three faces, labels, text, watermark, distorted hands",
+        "resolution": 1024
+      },
+      "title": "固定・変更不要｜Qwen K3 テキスト符号化"
+    },
+    {
+      "id": 52,
+      "type": "LatentUpscale",
+      "pos": [
+        710,
+        1710
+      ],
+      "size": [
+        280,
+        150
+      ],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 48
+        },
+        {
+          "name": "upscale_method",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "upscale_method"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "crop",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "crop"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            52
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LatentUpscale"
+      },
+      "widgets_values": [
+        "nearest-exact",
+        512,
+        896,
+        "disabled"
+      ],
+      "widgets_values_named": {
+        "upscale_method": "nearest-exact",
+        "width": 512,
+        "height": 896,
+        "crop": "disabled"
+      },
+      "title": "K3 latent｜1024×1792出力"
+    },
+    {
+      "id": 53,
+      "type": "KSampler",
+      "pos": [
+        1070,
+        1710
+      ],
+      "size": [
+        300,
+        290
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 49
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "seed"
+          }
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "steps"
+          }
+        },
+        {
+          "name": "cfg",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cfg"
+          }
+        },
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "sampler_name"
+          }
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "scheduler"
+          }
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 50
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 51
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 52
+        },
+        {
+          "name": "denoise",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "denoise"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            53
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        26092631,
+        "fixed",
+        25,
+        1.0,
+        "euler",
+        "simple",
+        1.0
+      ],
+      "widgets_values_named": {
+        "seed": 26092631,
+        "steps": 25,
+        "cfg": 1.0,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 1.0
+      },
+      "title": "Qwen K3｜25 steps"
+    },
+    {
+      "id": 54,
+      "type": "VAEDecode",
+      "pos": [
+        1440,
+        1710
+      ],
+      "size": [
+        250,
+        90
+      ],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 53
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 54
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            55,
+            61
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "K3 image"
+    },
+    {
+      "id": 55,
+      "type": "SaveImage",
+      "pos": [
+        1770,
+        1710
+      ],
+      "size": [
+        270,
+        110
+      ],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 55
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "qwen_h3_3scene/keyframe_K3"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "qwen_h3_3scene/keyframe_K3"
+      },
+      "title": "保存 K3"
+    },
+    {
+      "id": 60,
+      "type": "ImageBatch",
+      "pos": [
+        2190,
+        350
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 35,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image1",
+          "type": "IMAGE",
+          "link": 56
+        },
+        {
+          "name": "image2",
+          "type": "IMAGE",
+          "link": 57
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            58
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageBatch"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "K0 + K1"
+    },
+    {
+      "id": 61,
+      "type": "ImageBatch",
+      "pos": [
+        2190,
+        490
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 36,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image1",
+          "type": "IMAGE",
+          "link": 58
+        },
+        {
+          "name": "image2",
+          "type": "IMAGE",
+          "link": 59
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            60
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageBatch"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "K0 + K1 + K2"
+    },
+    {
+      "id": 62,
+      "type": "ImageBatch",
+      "pos": [
+        2190,
+        630
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 37,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image1",
+          "type": "IMAGE",
+          "link": 60
+        },
+        {
+          "name": "image2",
+          "type": "IMAGE",
+          "link": 61
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            62,
+            63,
+            64,
+            65
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageBatch"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "4画像完了バリア｜K0-K3"
+    },
+    {
+      "id": 63,
+      "type": "ImageFromBatch",
+      "pos": [
+        2530,
+        200
+      ],
+      "size": [
+        260,
+        110
+      ],
+      "flags": {},
+      "order": 38,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 62
+        },
+        {
+          "name": "batch_index",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "batch_index"
+          }
+        },
+        {
+          "name": "length",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "length"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            74
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageFromBatch"
+      },
+      "widgets_values": [
+        0,
+        1
+      ],
+      "widgets_values_named": {
+        "batch_index": 0,
+        "length": 1
+      },
+      "title": "K0｜H3入力"
+    },
+    {
+      "id": 64,
+      "type": "ImageFromBatch",
+      "pos": [
+        2530,
+        380
+      ],
+      "size": [
+        260,
+        110
+      ],
+      "flags": {},
+      "order": 39,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 63
+        },
+        {
+          "name": "batch_index",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "batch_index"
+          }
+        },
+        {
+          "name": "length",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "length"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            75,
+            94
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageFromBatch"
+      },
+      "widgets_values": [
+        1,
+        1
+      ],
+      "widgets_values_named": {
+        "batch_index": 1,
+        "length": 1
+      },
+      "title": "K1｜H3入力"
+    },
+    {
+      "id": 65,
+      "type": "ImageFromBatch",
+      "pos": [
+        2530,
+        560
+      ],
+      "size": [
+        260,
+        110
+      ],
+      "flags": {},
+      "order": 40,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 64
+        },
+        {
+          "name": "batch_index",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "batch_index"
+          }
+        },
+        {
+          "name": "length",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "length"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            95,
+            114
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageFromBatch"
+      },
+      "widgets_values": [
+        2,
+        1
+      ],
+      "widgets_values_named": {
+        "batch_index": 2,
+        "length": 1
+      },
+      "title": "K2｜H3入力"
+    },
+    {
+      "id": 66,
+      "type": "ImageFromBatch",
+      "pos": [
+        2530,
+        740
+      ],
+      "size": [
+        260,
+        110
+      ],
+      "flags": {},
+      "order": 41,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 65
+        },
+        {
+          "name": "batch_index",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "batch_index"
+          }
+        },
+        {
+          "name": "length",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "length"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            115
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageFromBatch"
+      },
+      "widgets_values": [
+        3,
+        1
+      ],
+      "widgets_values_named": {
+        "batch_index": 3,
+        "length": 1
+      },
+      "title": "K3｜H3入力"
+    },
+    {
+      "id": 70,
+      "type": "UNETLoader",
+      "pos": [
+        2970,
+        0
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 42,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "unet_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "unet_name"
+          }
+        },
+        {
+          "name": "weight_dtype",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "weight_dtype"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            66
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "minimax_h3_fused_refdelta_r1024_turbo8_mystic07_int8_convrot.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "minimax_h3_fused_refdelta_r1024_turbo8_mystic07_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      },
+      "title": "H3 MATLOW fused turbo UNET"
+    },
+    {
+      "id": 74,
+      "type": "CLIPLoader",
+      "pos": [
+        2970,
+        580
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 43,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "clip_name"
+          }
+        },
+        {
+          "name": "type",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "type"
+          }
+        },
+        {
+          "name": "device",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "device"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            71,
+            91,
+            111
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "minimax",
+        "default"
+      ],
+      "widgets_values_named": {
+        "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "type": "minimax",
+        "device": "default"
+      },
+      "title": "H3 text encoder"
+    },
+    {
+      "id": 75,
+      "type": "VAELoader",
+      "pos": [
+        2970,
+        710
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 44,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vae_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "vae_name"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            72,
+            84,
+            92,
+            104,
+            112,
+            124
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_video_vae_int8_convrot.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"
+      },
+      "title": "H3 video VAE"
+    },
+    {
+      "id": 76,
+      "type": "VAELoader",
+      "pos": [
+        2970,
+        840
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 45,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vae_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "vae_name"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            86,
+            106,
+            126
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_audio_vae_fp32.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+      },
+      "title": "H3 audio VAE"
+    },
+    {
+      "id": 71,
+      "type": "MiniMaxChunkFeedForward",
+      "pos": [
+        3300,
+        0
+      ],
+      "size": [
+        290,
+        150
+      ],
+      "flags": {},
+      "order": 46,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 66
+        },
+        {
+          "name": "chunks",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "chunks"
+          }
+        },
+        {
+          "name": "seq_threshold",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "seq_threshold"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            67
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxChunkFeedForward"
+      },
+      "widgets_values": [
+        4,
+        4096
+      ],
+      "widgets_values_named": {
+        "chunks": 4,
+        "seq_threshold": 4096
+      },
+      "title": "ChunkFFN 4 / 4096"
+    },
+    {
+      "id": 72,
+      "type": "BlockSparseAttention",
+      "pos": [
+        3630,
+        0
+      ],
+      "size": [
+        320,
+        220
+      ],
+      "flags": {},
+      "order": 47,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 67
+        },
+        {
+          "name": "selection",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "link": null,
+          "widget": {
+            "name": "selection"
+          }
+        },
+        {
+          "name": "selection.keep_percent",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "selection.keep_percent"
+          }
+        },
+        {
+          "name": "start_percent",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "start_percent"
+          }
+        },
+        {
+          "name": "end_percent",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "end_percent"
+          }
+        },
+        {
+          "name": "dense_blocks",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "dense_blocks"
+          }
+        },
+        {
+          "name": "min_tokens",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "min_tokens"
+          }
+        },
+        {
+          "name": "extra_tokens",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "extra_tokens"
+          }
+        },
+        {
+          "name": "sink_conditioning",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "sink_conditioning"
+          }
+        },
+        {
+          "name": "verbose",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "verbose"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            68
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BlockSparseAttention"
+      },
+      "widgets_values": [
+        "sla",
+        5.0,
+        0.0,
+        1.0,
+        "",
+        12288,
+        256,
+        "exact_kv_and_rows",
+        true
+      ],
+      "widgets_values_named": {
+        "selection": "sla",
+        "selection.keep_percent": 5.0,
+        "start_percent": 0.0,
+        "end_percent": 1.0,
+        "dense_blocks": "",
+        "min_tokens": 12288,
+        "extra_tokens": 256,
+        "sink_conditioning": "exact_kv_and_rows",
+        "verbose": true
+      },
+      "title": "SLA 5%"
+    },
+    {
+      "id": 73,
+      "type": "MiniMaxH3SigmaShift",
+      "pos": [
+        3990,
+        0
+      ],
+      "size": [
+        290,
+        150
+      ],
+      "flags": {},
+      "order": 48,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 68
+        },
+        {
+          "name": "shift_video",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "shift_video"
+          }
+        },
+        {
+          "name": "shift_audio",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "shift_audio"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            69,
+            76,
+            96,
+            116
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3SigmaShift"
+      },
+      "widgets_values": [
+        12.0,
+        3.0
+      ],
+      "widgets_values_named": {
+        "shift_video": 12.0,
+        "shift_audio": 3.0
+      },
+      "title": "Sigma shift 12/3"
+    },
+    {
+      "id": 77,
+      "type": "BasicScheduler",
+      "pos": [
+        4310,
+        0
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 49,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 69
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "scheduler"
+          }
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "steps"
+          }
+        },
+        {
+          "name": "denoise",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "denoise"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            81,
+            101,
+            121
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicScheduler"
+      },
+      "widgets_values": [
+        "simple",
+        4,
+        1.0
+      ],
+      "widgets_values_named": {
+        "scheduler": "simple",
+        "steps": 4,
+        "denoise": 1.0
+      },
+      "title": "H3 simple / 4 steps"
+    },
+    {
+      "id": 78,
+      "type": "KSamplerSelect",
+      "pos": [
+        4310,
+        140
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 50,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "sampler_name"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            80,
+            100,
+            120
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect"
+      },
+      "widgets_values": [
+        "res_multistep"
+      ],
+      "widgets_values_named": {
+        "sampler_name": "res_multistep"
+      },
+      "title": "H3 res_multistep"
+    },
+    {
+      "id": 80,
+      "type": "StringFormat",
+      "pos": [
+        2970,
+        430
+      ],
+      "size": [
+        550,
+        200
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 51,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "*",
+          "link": 70
+        },
+        {
+          "name": "f_string",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "f_string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            73
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringFormat"
+      },
+      "widgets_values": [
+        "How the reference pictures align with the target video — Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot 1) aligns with the 3.00-second mark of the target video.\n\nintegrated_multimodal_description: {a}"
+      ],
+      "widgets_values_named": {
+        "f_string": "How the reference pictures align with the target video — Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot 1) aligns with the 3.00-second mark of the target video.\n\nintegrated_multimodal_description: {a}"
+      },
+      "title": "固定・変更不要｜シーン1のFL2VA形式"
+    },
+    {
+      "id": 81,
+      "type": "MiniMaxH3ImageToVideo",
+      "pos": [
+        3600,
+        430
+      ],
+      "size": [
+        360,
+        300
+      ],
+      "flags": {},
+      "order": 52,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 71
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 72
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 73,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "length",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "length"
+          }
+        },
+        {
+          "name": "first_frame",
+          "type": "IMAGE",
+          "link": 74
+        },
+        {
+          "name": "last_frame",
+          "type": "IMAGE",
+          "link": 75
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            77
+          ]
+        },
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            82
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3ImageToVideo"
+      },
+      "widgets_values": [
+        "",
+        1024,
+        1792,
+        73
+      ],
+      "widgets_values_named": {
+        "prompt": "",
+        "width": 1024,
+        "height": 1792,
+        "length": 73
+      },
+      "title": "シーン1｜K0→K1"
+    },
+    {
+      "id": 82,
+      "type": "RandomNoise",
+      "pos": [
+        3990,
+        430
+      ],
+      "size": [
+        250,
+        90
+      ],
+      "flags": {},
+      "order": 53,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise_seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "noise_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            78
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        43,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "noise_seed": 43
+      },
+      "title": "シーン1 seed"
+    },
+    {
+      "id": 83,
+      "type": "BasicGuider",
+      "pos": [
+        4310,
+        430
+      ],
+      "size": [
+        250,
+        90
+      ],
+      "flags": {},
+      "order": 54,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 76
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 77
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            79
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "シーン1 guider"
+    },
+    {
+      "id": 84,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        4630,
+        430
+      ],
+      "size": [
+        300,
+        210
+      ],
+      "flags": {},
+      "order": 55,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 78
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 79
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 80
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 81
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 82
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            83,
+            85
+          ]
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "シーン1｜H3 4step sampling"
+    },
+    {
+      "id": 85,
+      "type": "MiniMaxH3FastVAEDecode",
+      "pos": [
+        5010,
+        430
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 56,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 83
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 84
+        },
+        {
+          "name": "tile_batch_size",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "tile_batch_size"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            87
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3FastVAEDecode"
+      },
+      "widgets_values": [
+        2
+      ],
+      "widgets_values_named": {
+        "tile_batch_size": 2
+      },
+      "title": "シーン1｜video VAE"
+    },
+    {
+      "id": 86,
+      "type": "VAEDecodeAudio",
+      "pos": [
+        5010,
+        590
+      ],
+      "size": [
+        260,
+        90
+      ],
+      "flags": {},
+      "order": 57,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 85
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 86
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            88
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeAudio"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "シーン1｜audio VAE"
+    },
+    {
+      "id": 87,
+      "type": "CreateVideo",
+      "pos": [
+        5360,
+        430
+      ],
+      "size": [
+        260,
+        160
+      ],
+      "flags": {},
+      "order": 58,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 87
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 88
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "fps"
+          }
+        },
+        {
+          "name": "bit_depth",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "bit_depth"
+          }
+        },
+        {
+          "name": "color_space",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "color_space"
+          }
+        },
+        {
+          "name": "codec",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "codec"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            89,
+            130
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo"
+      },
+      "widgets_values": [
+        24.0,
+        8,
+        "sRGB",
+        "h264"
+      ],
+      "widgets_values_named": {
+        "fps": 24.0,
+        "bit_depth": 8,
+        "color_space": "sRGB",
+        "codec": "h264"
+      },
+      "title": "シーン1｜H.264/AAC"
+    },
+    {
+      "id": 88,
+      "type": "SaveVideo",
+      "pos": [
+        5700,
+        430
+      ],
+      "size": [
+        300,
+        150
+      ],
+      "flags": {},
+      "order": 59,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 89
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        },
+        {
+          "name": "format",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "link": null,
+          "widget": {
+            "name": "format"
+          }
+        },
+        {
+          "name": "codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "link": null,
+          "widget": {
+            "name": "codec"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "qwen_h3_3scene/scene_01",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "qwen_h3_3scene/scene_01",
+        "format": "auto",
+        "codec": "auto"
+      },
+      "title": "保存 シーン1"
+    },
+    {
+      "id": 100,
+      "type": "StringFormat",
+      "pos": [
+        2970,
+        1190
+      ],
+      "size": [
+        550,
+        200
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 60,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "*",
+          "link": 90
+        },
+        {
+          "name": "f_string",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "f_string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            93
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringFormat"
+      },
+      "widgets_values": [
+        "How the reference pictures align with the target video — Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot 1) aligns with the 3.00-second mark of the target video.\n\nintegrated_multimodal_description: {a}"
+      ],
+      "widgets_values_named": {
+        "f_string": "How the reference pictures align with the target video — Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot 1) aligns with the 3.00-second mark of the target video.\n\nintegrated_multimodal_description: {a}"
+      },
+      "title": "固定・変更不要｜シーン2のFL2VA形式"
+    },
+    {
+      "id": 101,
+      "type": "MiniMaxH3ImageToVideo",
+      "pos": [
+        3600,
+        1190
+      ],
+      "size": [
+        360,
+        300
+      ],
+      "flags": {},
+      "order": 61,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 91
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 92
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 93,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "length",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "length"
+          }
+        },
+        {
+          "name": "first_frame",
+          "type": "IMAGE",
+          "link": 94
+        },
+        {
+          "name": "last_frame",
+          "type": "IMAGE",
+          "link": 95
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            97
+          ]
+        },
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            102
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3ImageToVideo"
+      },
+      "widgets_values": [
+        "",
+        1024,
+        1792,
+        73
+      ],
+      "widgets_values_named": {
+        "prompt": "",
+        "width": 1024,
+        "height": 1792,
+        "length": 73
+      },
+      "title": "シーン2｜K1→K2"
+    },
+    {
+      "id": 102,
+      "type": "RandomNoise",
+      "pos": [
+        3990,
+        1190
+      ],
+      "size": [
+        250,
+        90
+      ],
+      "flags": {},
+      "order": 62,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise_seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "noise_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            98
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        44,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "noise_seed": 44
+      },
+      "title": "シーン2 seed"
+    },
+    {
+      "id": 103,
+      "type": "BasicGuider",
+      "pos": [
+        4310,
+        1190
+      ],
+      "size": [
+        250,
+        90
+      ],
+      "flags": {},
+      "order": 63,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 96
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 97
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            99
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "シーン2 guider"
+    },
+    {
+      "id": 104,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        4630,
+        1190
+      ],
+      "size": [
+        300,
+        210
+      ],
+      "flags": {},
+      "order": 64,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 98
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 99
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 100
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 101
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 102
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            103,
+            105
+          ]
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "シーン2｜H3 4step sampling"
+    },
+    {
+      "id": 105,
+      "type": "MiniMaxH3FastVAEDecode",
+      "pos": [
+        5010,
+        1190
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 65,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 103
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 104
+        },
+        {
+          "name": "tile_batch_size",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "tile_batch_size"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            107
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3FastVAEDecode"
+      },
+      "widgets_values": [
+        2
+      ],
+      "widgets_values_named": {
+        "tile_batch_size": 2
+      },
+      "title": "シーン2｜video VAE"
+    },
+    {
+      "id": 106,
+      "type": "VAEDecodeAudio",
+      "pos": [
+        5010,
+        1350
+      ],
+      "size": [
+        260,
+        90
+      ],
+      "flags": {},
+      "order": 66,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 105
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 106
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            108
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeAudio"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "シーン2｜audio VAE"
+    },
+    {
+      "id": 107,
+      "type": "CreateVideo",
+      "pos": [
+        5360,
+        1190
+      ],
+      "size": [
+        260,
+        160
+      ],
+      "flags": {},
+      "order": 67,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 107
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 108
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "fps"
+          }
+        },
+        {
+          "name": "bit_depth",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "bit_depth"
+          }
+        },
+        {
+          "name": "color_space",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "color_space"
+          }
+        },
+        {
+          "name": "codec",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "codec"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            109,
+            131
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo"
+      },
+      "widgets_values": [
+        24.0,
+        8,
+        "sRGB",
+        "h264"
+      ],
+      "widgets_values_named": {
+        "fps": 24.0,
+        "bit_depth": 8,
+        "color_space": "sRGB",
+        "codec": "h264"
+      },
+      "title": "シーン2｜H.264/AAC"
+    },
+    {
+      "id": 108,
+      "type": "SaveVideo",
+      "pos": [
+        5700,
+        1190
+      ],
+      "size": [
+        300,
+        150
+      ],
+      "flags": {},
+      "order": 68,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 109
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        },
+        {
+          "name": "format",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "link": null,
+          "widget": {
+            "name": "format"
+          }
+        },
+        {
+          "name": "codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "link": null,
+          "widget": {
+            "name": "codec"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "qwen_h3_3scene/scene_02",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "qwen_h3_3scene/scene_02",
+        "format": "auto",
+        "codec": "auto"
+      },
+      "title": "保存 シーン2"
+    },
+    {
+      "id": 120,
+      "type": "StringFormat",
+      "pos": [
+        2970,
+        1950
+      ],
+      "size": [
+        550,
+        200
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 69,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "values.a",
+          "type": "*",
+          "link": 110
+        },
+        {
+          "name": "f_string",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "f_string"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            113
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringFormat"
+      },
+      "widgets_values": [
+        "How the reference pictures align with the target video — Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot 1) aligns with the 3.00-second mark of the target video.\n\nintegrated_multimodal_description: {a}"
+      ],
+      "widgets_values_named": {
+        "f_string": "How the reference pictures align with the target video — Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot 1) aligns with the 3.00-second mark of the target video.\n\nintegrated_multimodal_description: {a}"
+      },
+      "title": "固定・変更不要｜シーン3のFL2VA形式"
+    },
+    {
+      "id": 121,
+      "type": "MiniMaxH3ImageToVideo",
+      "pos": [
+        3600,
+        1950
+      ],
+      "size": [
+        360,
+        300
+      ],
+      "flags": {},
+      "order": 70,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 111
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 112
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 113,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "length",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "length"
+          }
+        },
+        {
+          "name": "first_frame",
+          "type": "IMAGE",
+          "link": 114
+        },
+        {
+          "name": "last_frame",
+          "type": "IMAGE",
+          "link": 115
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            117
+          ]
+        },
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            122
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3ImageToVideo"
+      },
+      "widgets_values": [
+        "",
+        1024,
+        1792,
+        73
+      ],
+      "widgets_values_named": {
+        "prompt": "",
+        "width": 1024,
+        "height": 1792,
+        "length": 73
+      },
+      "title": "シーン3｜K2→K3"
+    },
+    {
+      "id": 122,
+      "type": "RandomNoise",
+      "pos": [
+        3990,
+        1950
+      ],
+      "size": [
+        250,
+        90
+      ],
+      "flags": {},
+      "order": 71,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise_seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "noise_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            118
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        45,
+        "fixed"
+      ],
+      "widgets_values_named": {
+        "noise_seed": 45
+      },
+      "title": "シーン3 seed"
+    },
+    {
+      "id": 123,
+      "type": "BasicGuider",
+      "pos": [
+        4310,
+        1950
+      ],
+      "size": [
+        250,
+        90
+      ],
+      "flags": {},
+      "order": 72,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 116
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 117
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            119
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "シーン3 guider"
+    },
+    {
+      "id": 124,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        4630,
+        1950
+      ],
+      "size": [
+        300,
+        210
+      ],
+      "flags": {},
+      "order": 73,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 118
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 119
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 120
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 121
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 122
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            123,
+            125
+          ]
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "シーン3｜H3 4step sampling"
+    },
+    {
+      "id": 125,
+      "type": "MiniMaxH3FastVAEDecode",
+      "pos": [
+        5010,
+        1950
+      ],
+      "size": [
+        260,
+        120
+      ],
+      "flags": {},
+      "order": 74,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 123
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 124
+        },
+        {
+          "name": "tile_batch_size",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "tile_batch_size"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            127
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3FastVAEDecode"
+      },
+      "widgets_values": [
+        2
+      ],
+      "widgets_values_named": {
+        "tile_batch_size": 2
+      },
+      "title": "シーン3｜video VAE"
+    },
+    {
+      "id": 126,
+      "type": "VAEDecodeAudio",
+      "pos": [
+        5010,
+        2110
+      ],
+      "size": [
+        260,
+        90
+      ],
+      "flags": {},
+      "order": 75,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 125
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 126
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            128
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeAudio"
+      },
+      "widgets_values": [],
+      "widgets_values_named": {},
+      "title": "シーン3｜audio VAE"
+    },
+    {
+      "id": 127,
+      "type": "CreateVideo",
+      "pos": [
+        5360,
+        1950
+      ],
+      "size": [
+        260,
+        160
+      ],
+      "flags": {},
+      "order": 76,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 127
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 128
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "fps"
+          }
+        },
+        {
+          "name": "bit_depth",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "bit_depth"
+          }
+        },
+        {
+          "name": "color_space",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "color_space"
+          }
+        },
+        {
+          "name": "codec",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "codec"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            129,
+            132
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo"
+      },
+      "widgets_values": [
+        24.0,
+        8,
+        "sRGB",
+        "h264"
+      ],
+      "widgets_values_named": {
+        "fps": 24.0,
+        "bit_depth": 8,
+        "color_space": "sRGB",
+        "codec": "h264"
+      },
+      "title": "シーン3｜H.264/AAC"
+    },
+    {
+      "id": 128,
+      "type": "SaveVideo",
+      "pos": [
+        5700,
+        1950
+      ],
+      "size": [
+        300,
+        150
+      ],
+      "flags": {},
+      "order": 77,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 129
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        },
+        {
+          "name": "format",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "link": null,
+          "widget": {
+            "name": "format"
+          }
+        },
+        {
+          "name": "codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "link": null,
+          "widget": {
+            "name": "codec"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "qwen_h3_3scene/scene_03",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "qwen_h3_3scene/scene_03",
+        "format": "auto",
+        "codec": "auto"
+      },
+      "title": "保存 シーン3"
+    },
+    {
+      "id": 140,
+      "type": "ConcatenateVideo",
+      "pos": [
+        6130,
+        1110
+      ],
+      "size": [
+        370,
+        180
+      ],
+      "flags": {},
+      "order": 78,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "videos.video0",
+          "type": "VIDEO",
+          "link": 130
+        },
+        {
+          "name": "videos.video1",
+          "type": "VIDEO",
+          "link": 131
+        },
+        {
+          "name": "videos.video2",
+          "type": "VIDEO",
+          "link": 132
+        },
+        {
+          "name": "codec",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "codec"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            133
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConcatenateVideo"
+      },
+      "widgets_values": [
+        "auto"
+      ],
+      "widgets_values_named": {
+        "codec": "auto"
+      },
+      "title": "シーン1→2→3｜音声付き結合"
+    },
+    {
+      "id": 141,
+      "type": "SaveVideo",
+      "pos": [
+        6600,
+        1110
+      ],
+      "size": [
+        310,
+        150
+      ],
+      "flags": {},
+      "order": 79,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 133
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        },
+        {
+          "name": "format",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "link": null,
+          "widget": {
+            "name": "format"
+          }
+        },
+        {
+          "name": "codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "link": null,
+          "widget": {
+            "name": "codec"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "qwen_h3_3scene/final",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "qwen_h3_3scene/final",
+        "format": "auto",
+        "codec": "auto"
+      },
+      "title": "完成動画を保存"
+    },
+    {
+      "id": 151,
+      "type": "JsonExtractString",
+      "pos": [
+        -1200,
+        1390
+      ],
+      "size": [
+        410,
+        100
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 80,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "json_string",
+          "type": "STRING",
+          "widget": {
+            "name": "json_string"
+          },
+          "link": 134
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JsonExtractString"
+      },
+      "widgets_values": [
+        "",
+        "k0_prompt"
+      ],
+      "widgets_values_named": {
+        "json_string": "",
+        "key": "k0_prompt"
+      },
+      "title": "固定・変更不要｜JSONからK0 初期画像を取得"
+    },
+    {
+      "id": 152,
+      "type": "JsonExtractString",
+      "pos": [
+        -1200,
+        1475
+      ],
+      "size": [
+        410,
+        100
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 81,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "json_string",
+          "type": "STRING",
+          "widget": {
+            "name": "json_string"
+          },
+          "link": 135
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JsonExtractString"
+      },
+      "widgets_values": [
+        "",
+        "k1_end"
+      ],
+      "widgets_values_named": {
+        "json_string": "",
+        "key": "k1_end"
+      },
+      "title": "固定・変更不要｜JSONからK1 終了状態を取得"
+    },
+    {
+      "id": 153,
+      "type": "JsonExtractString",
+      "pos": [
+        -1200,
+        1560
+      ],
+      "size": [
+        410,
+        100
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 82,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "json_string",
+          "type": "STRING",
+          "widget": {
+            "name": "json_string"
+          },
+          "link": 136
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            70
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JsonExtractString"
+      },
+      "widgets_values": [
+        "",
+        "scene1_h3"
+      ],
+      "widgets_values_named": {
+        "json_string": "",
+        "key": "scene1_h3"
+      },
+      "title": "固定・変更不要｜JSONからH3 シーン1を取得"
+    },
+    {
+      "id": 154,
+      "type": "JsonExtractString",
+      "pos": [
+        -1200,
+        1645
+      ],
+      "size": [
+        410,
+        100
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 83,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "json_string",
+          "type": "STRING",
+          "widget": {
+            "name": "json_string"
+          },
+          "link": 137
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            28
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JsonExtractString"
+      },
+      "widgets_values": [
+        "",
+        "k2_end"
+      ],
+      "widgets_values_named": {
+        "json_string": "",
+        "key": "k2_end"
+      },
+      "title": "固定・変更不要｜JSONからK2 終了状態を取得"
+    },
+    {
+      "id": 155,
+      "type": "JsonExtractString",
+      "pos": [
+        -1200,
+        1730
+      ],
+      "size": [
+        410,
+        100
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 84,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "json_string",
+          "type": "STRING",
+          "widget": {
+            "name": "json_string"
+          },
+          "link": 138
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            90
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JsonExtractString"
+      },
+      "widgets_values": [
+        "",
+        "scene2_h3"
+      ],
+      "widgets_values_named": {
+        "json_string": "",
+        "key": "scene2_h3"
+      },
+      "title": "固定・変更不要｜JSONからH3 シーン2を取得"
+    },
+    {
+      "id": 156,
+      "type": "JsonExtractString",
+      "pos": [
+        -1200,
+        1815
+      ],
+      "size": [
+        410,
+        100
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 85,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "json_string",
+          "type": "STRING",
+          "widget": {
+            "name": "json_string"
+          },
+          "link": 139
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            42
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JsonExtractString"
+      },
+      "widgets_values": [
+        "",
+        "k3_end"
+      ],
+      "widgets_values_named": {
+        "json_string": "",
+        "key": "k3_end"
+      },
+      "title": "固定・変更不要｜JSONからK3 終了状態を取得"
+    },
+    {
+      "id": 157,
+      "type": "JsonExtractString",
+      "pos": [
+        -1200,
+        1900
+      ],
+      "size": [
+        410,
+        100
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 86,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "json_string",
+          "type": "STRING",
+          "widget": {
+            "name": "json_string"
+          },
+          "link": 140
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            110
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JsonExtractString"
+      },
+      "widgets_values": [
+        "",
+        "scene3_h3"
+      ],
+      "widgets_values_named": {
+        "json_string": "",
+        "key": "scene3_h3"
+      },
+      "title": "固定・変更不要｜JSONからH3 シーン3を取得"
+    }
+  ],
+  "links": [
+    [
+      1,
+      10,
+      0,
+      13,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      11,
+      0,
+      20,
+      0,
+      "CLIP"
+    ],
+    [
+      3,
+      151,
+      0,
+      20,
+      1,
+      "STRING"
+    ],
+    [
+      4,
+      12,
+      0,
+      20,
+      4,
+      "VAE"
+    ],
+    [
+      5,
+      1,
+      0,
+      20,
+      5,
+      "IMAGE"
+    ],
+    [
+      6,
+      20,
+      2,
+      21,
+      0,
+      "LATENT"
+    ],
+    [
+      7,
+      13,
+      0,
+      22,
+      0,
+      "MODEL"
+    ],
+    [
+      8,
+      20,
+      0,
+      22,
+      6,
+      "CONDITIONING"
+    ],
+    [
+      9,
+      20,
+      1,
+      22,
+      7,
+      "CONDITIONING"
+    ],
+    [
+      10,
+      21,
+      0,
+      22,
+      8,
+      "LATENT"
+    ],
+    [
+      11,
+      22,
+      0,
+      23,
+      0,
+      "LATENT"
+    ],
+    [
+      12,
+      12,
+      0,
+      23,
+      1,
+      "VAE"
+    ],
+    [
+      13,
+      23,
+      0,
+      24,
+      0,
+      "IMAGE"
+    ],
+    [
+      14,
+      152,
+      0,
+      30,
+      0,
+      "STRING"
+    ],
+    [
+      15,
+      11,
+      0,
+      31,
+      0,
+      "CLIP"
+    ],
+    [
+      16,
+      30,
+      0,
+      31,
+      1,
+      "STRING"
+    ],
+    [
+      17,
+      12,
+      0,
+      31,
+      4,
+      "VAE"
+    ],
+    [
+      18,
+      23,
+      0,
+      31,
+      5,
+      "IMAGE"
+    ],
+    [
+      19,
+      1,
+      0,
+      31,
+      6,
+      "IMAGE"
+    ],
+    [
+      20,
+      31,
+      2,
+      32,
+      0,
+      "LATENT"
+    ],
+    [
+      21,
+      13,
+      0,
+      33,
+      0,
+      "MODEL"
+    ],
+    [
+      22,
+      31,
+      0,
+      33,
+      6,
+      "CONDITIONING"
+    ],
+    [
+      23,
+      31,
+      1,
+      33,
+      7,
+      "CONDITIONING"
+    ],
+    [
+      24,
+      32,
+      0,
+      33,
+      8,
+      "LATENT"
+    ],
+    [
+      25,
+      33,
+      0,
+      34,
+      0,
+      "LATENT"
+    ],
+    [
+      26,
+      12,
+      0,
+      34,
+      1,
+      "VAE"
+    ],
+    [
+      27,
+      34,
+      0,
+      35,
+      0,
+      "IMAGE"
+    ],
+    [
+      28,
+      154,
+      0,
+      40,
+      0,
+      "STRING"
+    ],
+    [
+      29,
+      11,
+      0,
+      41,
+      0,
+      "CLIP"
+    ],
+    [
+      30,
+      40,
+      0,
+      41,
+      1,
+      "STRING"
+    ],
+    [
+      31,
+      12,
+      0,
+      41,
+      4,
+      "VAE"
+    ],
+    [
+      32,
+      23,
+      0,
+      41,
+      5,
+      "IMAGE"
+    ],
+    [
+      33,
+      1,
+      0,
+      41,
+      6,
+      "IMAGE"
+    ],
+    [
+      34,
+      41,
+      2,
+      42,
+      0,
+      "LATENT"
+    ],
+    [
+      35,
+      13,
+      0,
+      43,
+      0,
+      "MODEL"
+    ],
+    [
+      36,
+      41,
+      0,
+      43,
+      6,
+      "CONDITIONING"
+    ],
+    [
+      37,
+      41,
+      1,
+      43,
+      7,
+      "CONDITIONING"
+    ],
+    [
+      38,
+      42,
+      0,
+      43,
+      8,
+      "LATENT"
+    ],
+    [
+      39,
+      43,
+      0,
+      44,
+      0,
+      "LATENT"
+    ],
+    [
+      40,
+      12,
+      0,
+      44,
+      1,
+      "VAE"
+    ],
+    [
+      41,
+      44,
+      0,
+      45,
+      0,
+      "IMAGE"
+    ],
+    [
+      42,
+      156,
+      0,
+      50,
+      0,
+      "STRING"
+    ],
+    [
+      43,
+      11,
+      0,
+      51,
+      0,
+      "CLIP"
+    ],
+    [
+      44,
+      50,
+      0,
+      51,
+      1,
+      "STRING"
+    ],
+    [
+      45,
+      12,
+      0,
+      51,
+      4,
+      "VAE"
+    ],
+    [
+      46,
+      23,
+      0,
+      51,
+      5,
+      "IMAGE"
+    ],
+    [
+      47,
+      1,
+      0,
+      51,
+      6,
+      "IMAGE"
+    ],
+    [
+      48,
+      51,
+      2,
+      52,
+      0,
+      "LATENT"
+    ],
+    [
+      49,
+      13,
+      0,
+      53,
+      0,
+      "MODEL"
+    ],
+    [
+      50,
+      51,
+      0,
+      53,
+      6,
+      "CONDITIONING"
+    ],
+    [
+      51,
+      51,
+      1,
+      53,
+      7,
+      "CONDITIONING"
+    ],
+    [
+      52,
+      52,
+      0,
+      53,
+      8,
+      "LATENT"
+    ],
+    [
+      53,
+      53,
+      0,
+      54,
+      0,
+      "LATENT"
+    ],
+    [
+      54,
+      12,
+      0,
+      54,
+      1,
+      "VAE"
+    ],
+    [
+      55,
+      54,
+      0,
+      55,
+      0,
+      "IMAGE"
+    ],
+    [
+      56,
+      23,
+      0,
+      60,
+      0,
+      "IMAGE"
+    ],
+    [
+      57,
+      34,
+      0,
+      60,
+      1,
+      "IMAGE"
+    ],
+    [
+      58,
+      60,
+      0,
+      61,
+      0,
+      "IMAGE"
+    ],
+    [
+      59,
+      44,
+      0,
+      61,
+      1,
+      "IMAGE"
+    ],
+    [
+      60,
+      61,
+      0,
+      62,
+      0,
+      "IMAGE"
+    ],
+    [
+      61,
+      54,
+      0,
+      62,
+      1,
+      "IMAGE"
+    ],
+    [
+      62,
+      62,
+      0,
+      63,
+      0,
+      "IMAGE"
+    ],
+    [
+      63,
+      62,
+      0,
+      64,
+      0,
+      "IMAGE"
+    ],
+    [
+      64,
+      62,
+      0,
+      65,
+      0,
+      "IMAGE"
+    ],
+    [
+      65,
+      62,
+      0,
+      66,
+      0,
+      "IMAGE"
+    ],
+    [
+      66,
+      70,
+      0,
+      71,
+      0,
+      "MODEL"
+    ],
+    [
+      67,
+      71,
+      0,
+      72,
+      0,
+      "MODEL"
+    ],
+    [
+      68,
+      72,
+      0,
+      73,
+      0,
+      "MODEL"
+    ],
+    [
+      69,
+      73,
+      0,
+      77,
+      0,
+      "MODEL"
+    ],
+    [
+      70,
+      153,
+      0,
+      80,
+      0,
+      "STRING"
+    ],
+    [
+      71,
+      74,
+      0,
+      81,
+      0,
+      "CLIP"
+    ],
+    [
+      72,
+      75,
+      0,
+      81,
+      1,
+      "VAE"
+    ],
+    [
+      73,
+      80,
+      0,
+      81,
+      2,
+      "STRING"
+    ],
+    [
+      74,
+      63,
+      0,
+      81,
+      6,
+      "IMAGE"
+    ],
+    [
+      75,
+      64,
+      0,
+      81,
+      7,
+      "IMAGE"
+    ],
+    [
+      76,
+      73,
+      0,
+      83,
+      0,
+      "MODEL"
+    ],
+    [
+      77,
+      81,
+      0,
+      83,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      78,
+      82,
+      0,
+      84,
+      0,
+      "NOISE"
+    ],
+    [
+      79,
+      83,
+      0,
+      84,
+      1,
+      "GUIDER"
+    ],
+    [
+      80,
+      78,
+      0,
+      84,
+      2,
+      "SAMPLER"
+    ],
+    [
+      81,
+      77,
+      0,
+      84,
+      3,
+      "SIGMAS"
+    ],
+    [
+      82,
+      81,
+      1,
+      84,
+      4,
+      "LATENT"
+    ],
+    [
+      83,
+      84,
+      0,
+      85,
+      0,
+      "LATENT"
+    ],
+    [
+      84,
+      75,
+      0,
+      85,
+      1,
+      "VAE"
+    ],
+    [
+      85,
+      84,
+      0,
+      86,
+      0,
+      "LATENT"
+    ],
+    [
+      86,
+      76,
+      0,
+      86,
+      1,
+      "VAE"
+    ],
+    [
+      87,
+      85,
+      0,
+      87,
+      0,
+      "IMAGE"
+    ],
+    [
+      88,
+      86,
+      0,
+      87,
+      1,
+      "AUDIO"
+    ],
+    [
+      89,
+      87,
+      0,
+      88,
+      0,
+      "VIDEO"
+    ],
+    [
+      90,
+      155,
+      0,
+      100,
+      0,
+      "STRING"
+    ],
+    [
+      91,
+      74,
+      0,
+      101,
+      0,
+      "CLIP"
+    ],
+    [
+      92,
+      75,
+      0,
+      101,
+      1,
+      "VAE"
+    ],
+    [
+      93,
+      100,
+      0,
+      101,
+      2,
+      "STRING"
+    ],
+    [
+      94,
+      64,
+      0,
+      101,
+      6,
+      "IMAGE"
+    ],
+    [
+      95,
+      65,
+      0,
+      101,
+      7,
+      "IMAGE"
+    ],
+    [
+      96,
+      73,
+      0,
+      103,
+      0,
+      "MODEL"
+    ],
+    [
+      97,
+      101,
+      0,
+      103,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      98,
+      102,
+      0,
+      104,
+      0,
+      "NOISE"
+    ],
+    [
+      99,
+      103,
+      0,
+      104,
+      1,
+      "GUIDER"
+    ],
+    [
+      100,
+      78,
+      0,
+      104,
+      2,
+      "SAMPLER"
+    ],
+    [
+      101,
+      77,
+      0,
+      104,
+      3,
+      "SIGMAS"
+    ],
+    [
+      102,
+      101,
+      1,
+      104,
+      4,
+      "LATENT"
+    ],
+    [
+      103,
+      104,
+      0,
+      105,
+      0,
+      "LATENT"
+    ],
+    [
+      104,
+      75,
+      0,
+      105,
+      1,
+      "VAE"
+    ],
+    [
+      105,
+      104,
+      0,
+      106,
+      0,
+      "LATENT"
+    ],
+    [
+      106,
+      76,
+      0,
+      106,
+      1,
+      "VAE"
+    ],
+    [
+      107,
+      105,
+      0,
+      107,
+      0,
+      "IMAGE"
+    ],
+    [
+      108,
+      106,
+      0,
+      107,
+      1,
+      "AUDIO"
+    ],
+    [
+      109,
+      107,
+      0,
+      108,
+      0,
+      "VIDEO"
+    ],
+    [
+      110,
+      157,
+      0,
+      120,
+      0,
+      "STRING"
+    ],
+    [
+      111,
+      74,
+      0,
+      121,
+      0,
+      "CLIP"
+    ],
+    [
+      112,
+      75,
+      0,
+      121,
+      1,
+      "VAE"
+    ],
+    [
+      113,
+      120,
+      0,
+      121,
+      2,
+      "STRING"
+    ],
+    [
+      114,
+      65,
+      0,
+      121,
+      6,
+      "IMAGE"
+    ],
+    [
+      115,
+      66,
+      0,
+      121,
+      7,
+      "IMAGE"
+    ],
+    [
+      116,
+      73,
+      0,
+      123,
+      0,
+      "MODEL"
+    ],
+    [
+      117,
+      121,
+      0,
+      123,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      118,
+      122,
+      0,
+      124,
+      0,
+      "NOISE"
+    ],
+    [
+      119,
+      123,
+      0,
+      124,
+      1,
+      "GUIDER"
+    ],
+    [
+      120,
+      78,
+      0,
+      124,
+      2,
+      "SAMPLER"
+    ],
+    [
+      121,
+      77,
+      0,
+      124,
+      3,
+      "SIGMAS"
+    ],
+    [
+      122,
+      121,
+      1,
+      124,
+      4,
+      "LATENT"
+    ],
+    [
+      123,
+      124,
+      0,
+      125,
+      0,
+      "LATENT"
+    ],
+    [
+      124,
+      75,
+      0,
+      125,
+      1,
+      "VAE"
+    ],
+    [
+      125,
+      124,
+      0,
+      126,
+      0,
+      "LATENT"
+    ],
+    [
+      126,
+      76,
+      0,
+      126,
+      1,
+      "VAE"
+    ],
+    [
+      127,
+      125,
+      0,
+      127,
+      0,
+      "IMAGE"
+    ],
+    [
+      128,
+      126,
+      0,
+      127,
+      1,
+      "AUDIO"
+    ],
+    [
+      129,
+      127,
+      0,
+      128,
+      0,
+      "VIDEO"
+    ],
+    [
+      130,
+      87,
+      0,
+      140,
+      0,
+      "VIDEO"
+    ],
+    [
+      131,
+      107,
+      0,
+      140,
+      1,
+      "VIDEO"
+    ],
+    [
+      132,
+      127,
+      0,
+      140,
+      2,
+      "VIDEO"
+    ],
+    [
+      133,
+      140,
+      0,
+      141,
+      0,
+      "VIDEO"
+    ],
+    [
+      134,
+      2,
+      0,
+      151,
+      0,
+      "STRING"
+    ],
+    [
+      135,
+      2,
+      0,
+      152,
+      0,
+      "STRING"
+    ],
+    [
+      136,
+      2,
+      0,
+      153,
+      0,
+      "STRING"
+    ],
+    [
+      137,
+      2,
+      0,
+      154,
+      0,
+      "STRING"
+    ],
+    [
+      138,
+      2,
+      0,
+      155,
+      0,
+      "STRING"
+    ],
+    [
+      139,
+      2,
+      0,
+      156,
+      0,
+      "STRING"
+    ],
+    [
+      140,
+      2,
+      0,
+      157,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [
+    {
+      "title": "1 / 毎回の入力: 三面図 + AIのJSON 1欄",
+      "bounding": [
+        -1250,
+        -480,
+        1290,
+        2750
+      ],
+      "color": "#d5a600",
+      "font_size": 36,
+      "flags": {}
+    },
+    {
+      "title": "2 / Qwen Image 2.1: K0マスターからK1-K3を独立編集",
+      "bounding": [
+        100,
+        -130,
+        2010,
+        2200
+      ],
+      "color": "#6d9eeb",
+      "font_size": 34,
+      "flags": {}
+    },
+    {
+      "title": "3 / 4枚同期",
+      "bounding": [
+        2130,
+        70,
+        730,
+        900
+      ],
+      "color": "#8e7cc3",
+      "font_size": 34,
+      "flags": {}
+    },
+    {
+      "title": "4 / MiniMax H3 FL2VA: 3シーン",
+      "bounding": [
+        2900,
+        -130,
+        3130,
+        2600
+      ],
+      "color": "#93c47d",
+      "font_size": 34,
+      "flags": {}
+    },
+    {
+      "title": "5 / 結合と完成動画",
+      "bounding": [
+        6050,
+        970,
+        950,
+        370
+      ],
+      "color": "#e69138",
+      "font_size": 34,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.65,
+      "offset": [
+        1290,
+        400
+      ]
+    }
+  },
+  "version": 0.4
+}

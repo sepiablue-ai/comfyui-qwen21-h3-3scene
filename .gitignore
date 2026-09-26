@@ -1,0 +1,9 @@
+/input/
+/output/
+*.safetensors
+*.ckpt
+*.gguf
+*.pt
+*.pth
+__pycache__/
+*.pyc
