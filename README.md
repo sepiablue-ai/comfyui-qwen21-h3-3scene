@@ -4,6 +4,8 @@
 
 三面図を1枚選び、任意のAIチャットが作った7項目のJSONを1つのテキスト欄に貼ると、4枚のキーフレームと約3秒×3シーンの動画を生成・結合するComfyUIワークフローです。アニメと実写は**別々に1回ずつ**実行します。
 
+> 作者：かみもと（Kamimoto）｜検証結果の速報は **[X（@sep_is_heim）](https://x.com/sep_is_heim)**、解説記事は **[note](https://note.com/sepiablue)**（[記事INDEX](https://note.com/sepiablue/n/n8e612c619a3e)）で公開しています。
+
 ## 同梱ファイル
 
 - [`qwen_h3_3scene_workflow.json`](qwen_h3_3scene_workflow.json)：ComfyUIに読み込むGUIワークフロー
@@ -81,6 +83,21 @@ JSONのキーは `k0_prompt`、`k1_end`、`scene1_h3`、`k2_end`、`scene2_h3`�
 - 背景の配置を保つ指示だけでは、海の波などが静止して見える場合があります。動かしたい要素は、各 `scene*_h3` の**映像描写**に明記してください。`overall_soundscape` は音の指示です。
 - 音声は各シーン（約3秒）ごとにH3が独立して生成するため、シーンの境目（約3秒ごと）で環境音やBGMが途切れたり急変したりします。結合後動画の音声はクリップ同士を単純連結したものであり、シームレスな連続再生には対応していません。一貫したBGMや滑らかな音響が必要な場合は、生成後に外部BGMを重ねるなどの後処理を推奨します。
 - 初期の温室・紙飛行機JSONは公開用の汎用例です。この入力例での生成結果は検証していません。ワークフローの構成は、別の三面図とプロンプトを使ったローカル実行で確認しています。
+
+## 作者・関連リポジトリ
+
+かみもと（Kamimoto）です。RTX 4070 12GBで、MiniMax H3とComfyUIの高速化・省VRAM化を実測しながら公開しています。
+
+- X：[@sep_is_heim](https://x.com/sep_is_heim) — step数・秒数・短縮率などの検証速報
+- note：[かみもと｜ローカルAI生成](https://note.com/sepiablue) — 導入方法と実測の解説記事（[記事INDEX](https://note.com/sepiablue/n/n8e612c619a3e)）
+- [さやかベンチマーク](https://sayakabenchmark.pages.dev/) — H3ワークフローの速度・画質比較
+
+| リポジトリ | 内容 |
+|---|---|
+| [ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream) | X2 VAEのINT8化と非同期NVENC保存。1088×1920の音声付き5秒動画を約60秒で生成 |
+| [ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream) | 低解像度3step＋高解像度1step。14秒動画で約25%短縮 |
+| [ComfyUI-H3-AudioFirst-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-AudioFirst-X2-Stream) | 音声を先に作って固定し、金属的な響きを抑える2パス生成 |
+| [ComfyUI-MiniMax-H3-W4A4-VSA](https://github.com/sepiablue-ai/ComfyUI-MiniMax-H3-W4A4-VSA) | Ref2VAの高速化（FC1 W4A4、Streaming VSA） |
 
 ## ライセンスと帰属
 
